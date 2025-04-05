@@ -82,5 +82,9 @@ EdgeShield/
 └── README.md          # This documentation
 ```
 
+## How I want this project to be??
+- Setup a raspberry pi, push/perform/replay an attack onto it, use IOT-23 dataset.
+- Then the attack should be sent to another raspberry pi for monitoring, then an AI/ML model pre-trained should detect the class of attack, maybe 2 or 3 would be good.
+
 
 
