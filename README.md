@@ -1,90 +1,133 @@
-# EdgeShield: A Raspberry Pi Fog Security System for IoT
+EdgeShield: Real-Time Intrusion Detection System Using IoT-23 Dataset
 
-**EdgeShield** is a lightweight, real-time intrusion detection system designed for IoT environments. By processing network traffic directly on Raspberry Pis (fog nodes), it enables early threat detection at the edge — minimizing latency, conserving bandwidth, and boosting security without relying solely on the cloud.
+EdgeShield is a lightweight, real-time intrusion detection system (IDS) designed for edge computing environments. By processing network traffic directly at edge nodes, EdgeShield provides immediate detection and response capabilities, minimizing latency and conserving network resources.
 
----
+Project Overview
 
-## Project Overview
 EdgeShield deploys:
-- **2 Fog Nodes** (Raspberry Pi 4) to detect suspicious traffic using a pre-trained ML model.
-- **1 Gateway** device to receive and display alerts from fog nodes for centralized monitoring.
 
----
+Sender Laptop (Attack Replay Node): Replays traffic from IoT-23 dataset.
 
-## Key Features
-- Real-time intrusion detection at the edge
-- Lightweight ML model (e.g., Random Forest)
-- Alerts via MQTT or HTTP
-- Supports datasets like IoT-23 and TON_IoT for training
-- Easy deployment on Raspberry Pi OS
+Receiver Laptop (IDS Node): Captures replayed traffic and classifies it using a pre-trained ML model.
 
----
+Key Features
 
-## Requirements
+Real-time intrusion detection at the edge
 
-### Hardware:
-- 2 × Raspberry Pi 4 (2GB/4GB RAM) – **Fog Nodes**
-- 1 × Raspberry Pi / Small Server – **Gateway**
-- MicroSD Cards (≥16GB)
-- Official power supplies (5V/3A)
-- Network router or Wi-Fi access point
-- Ethernet cables (if using wired setup)
+Lightweight ML model (Random Forest)
 
-### Software:
-- Raspberry Pi OS
-- Python 3 with the following libraries:
-  - `numpy`, `pandas`, `scikit-learn` (or `tflite-runtime`)
-  - `paho-mqtt` (for MQTT-based alerts)
-  - Optional tools: `tcpdump`, `Suricata`, `Zeek` for real-time network capture
+Real-time classification of benign vs. non-benign traffic
 
----
+Easy deployment using Ubuntu/Debian OS
 
-##  Dataset (Offline Training)
-- [IoT-23 Dataset](https://www.stratosphereips.org/datasets-iot23): Contains labeled IoT traffic (e.g., Mirai, Gafgyt attacks).
-- [TON_IoT Dataset (Optional)](https://research.unsw.edu.au/projects/toniot-datasets): Provides telemetry and network data for IoT scenarios.
+Traffic replay from IoT-23 dataset
 
----
+Requirements
 
-## How It Works
+Hardware:
 
-### 1. Model Training (Offline)
-- Download IoT-23 dataset.
-- Convert PCAP files to flow data using tools like CICFlowMeter.
-- Extract key features: flow duration, packet counts, average packet sizes, etc.
-- Train a lightweight ML model (e.g., Random Forest).
-- Export the model as a `.pkl` file.
+Device
 
-### 2. Fog Node Deployment
-- Setup Raspberry Pi OS and install required Python libraries.
-- Run `fog_node.py` on each fog node:
-  - Captures local network traffic.
-  - Extracts real-time features.
-  - Classifies traffic using the ML model.
-  - Sends alert to gateway via MQTT or HTTP if malicious activity is detected.
+Hostname
 
-### 3. Gateway Integration
-- Run `gateway.py` on the Gateway device:
-  - Receives and logs alerts from fog nodes.
-  - Optionally displays alerts on a simple web dashboard.
+Ethernet NIC
 
----
+MAC Address
 
-## Project Structure (for now)
+Role
 
-```
-# TBD
+Static IP
+
+Laptop
+
+uday-Nitro-AN515-57
+
+enp2s0
+
+08:8f:c3:16:e7:ac
+
+Traffic Replay
+
+10.0.0.1/24
+
+Laptop
+
+dhee-Stealth-15-A13VF
+
+enp3s0
+
+04:7c:16:a6:e3:5b
+
+IDS Monitoring
+
+10.0.0.2/24
+
+CAT-5e/CAT-6 Ethernet cable
+
+Software:
+
+Ubuntu/Debian OS
+
+Python 3 with libraries:
+
+numpy, pandas, scikit-learn, pyshark
+
+Network tools: ethtool, tcpdump, tcpreplay
+
+Dataset
+
+IoT-23 Dataset: Preprocessed dataset for training and evaluating IDS models.
+
+Workflow
+
+1. Dataset Acquisition and Preparation
+
+Download and preprocess IoT-23 dataset.
+
+Train Random Forest model using model.py script.
+
+Save trained model as ids_rf_model.pkl.
+
+2. Traffic Replay Setup (Sender Node)
+
+Configure static IP address and disable hardware offloads.
+
+Rewrite MAC addresses in PCAP file to match sender/receiver NICs.
+
+3. IDS Monitoring Setup (Receiver Node)
+
+Configure static IP address and enable promiscuous mode.
+
+Disable hardware offloads.
+
+Run ids_live.py to start real-time detection.
+
+4. Replay Traffic and Classify
+
+Use tcpreplay to replay modified PCAP file.
+
+Real-time IDS classifies captured traffic instantly.
+
+Project Structure
+
 EdgeShield/
-├── fog_node.py        # Runs ML model & detects malicious traffic
-├── gateway.py         # Collects alerts from fog nodes
-├── attack_replay.py   # Replays attacks from PCAP files using tcpreplay
-├── custom_attack.py   # Generates custom SYN flood attacks 
-├── rf_model.pkl       # Pre-trained Random Forest ML model (TBD)
-└── README.md          # This documentation
-```
+├── model.py                 # Trains ML model on IoT-23 dataset
+├── ids_live.py              # Real-time intrusion detection
+├── ethernet_replay.pcap     # Modified replay file
+├── ids_rf_model.pkl         # Pre-trained Random Forest ML model
+└── README.md                # This documentation
 
-## How I want this project to be??
-- Setup a raspberry pi, push/perform/replay an attack onto it, use IOT-23 dataset.
-- Then the attack should be sent to another raspberry pi for monitoring, then an AI/ML model pre-trained should detect the class of attack, maybe 2 or 3 would be good.
+Results
 
+Real-time accurate detection of benign vs. malicious traffic.
 
+Validated IDS performance with realistic network attack scenarios.
+
+Contributing
+
+Contributions are welcome! Please open issues or submit pull requests to suggest improvements or new features.
+
+License
+
+Distributed under the MIT License.
 
